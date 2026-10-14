@@ -1,0 +1,86 @@
+Battleship Manual Test Cases
+============================
+
+TC-01: Hit a ship cell [Task 2]
+Setup: Place a ship on (1, 1) on a Board.
+Steps: Fire at (1, 1).
+Expected: fire returns True; that ship's damage includes (1, 1).
+
+TC-02: Miss an empty cell [Task 2]
+Setup: Place a ship on (1, 1) on a Board.
+Steps: Fire at (4, 4).
+Expected: fire returns False; no ship damage changes.
+
+TC-03: Reject a repeated shot [Task 2]
+Setup: Place any ship on a Board.
+Steps: Fire at (1, 1) twice.
+Expected: The first shot resolves normally; the second is rejected and does
+not alter damage or shot state.
+
+TC-04: Sink one ship while another remains [Task 2]
+Setup: Place ships {(1, 1), (1, 2)} and {(4, 4)}.
+Steps: Fire at (1, 1), (1, 2).
+Expected: The first ship is reported by sunk_ships; all_sunk remains False.
+
+TC-05: Sink the entire fleet [Task 2]
+Setup: Place ships {(1, 1), (1, 2)} and {(4, 4)}.
+Steps: Fire at (1, 1), (1, 2), (4, 4).
+Expected: Both ships appear in sunk_ships and all_sunk becomes True. In a
+game, the turn loop ends when either fleet is sunk.
+
+TC-06: Prevent repeated AI shots [Task 3]
+Setup: Create an AI with a small board, such as size 2.
+Steps: Request a choice until every cell has been selected, then request again.
+Expected: Every coordinate is unique; after all cells are tried, choose returns
+None without raising an exception.
+
+TC-07: Target near a hit [Task 3]
+Setup: Create an AI and record a hit at (1, 1) on a size-3 board.
+Steps: Request its next choice.
+Expected: It chooses an untried orthogonally adjacent cell: (0, 1), (2, 1),
+(1, 0), or (1, 2). It does not choose diagonally adjacent cells while these
+options remain.
+
+TC-08: Reject invalid player coordinates [Existing input validation]
+Steps: Enter malformed input, then an out-of-range coordinate.
+Expected: Each input is rejected, and the game continues without recording a
+shot or taking an AI turn.
+
+TC-09: Quit [Existing input handling]
+Steps: Enter q at the player prompt.
+Expected: The game exits without firing either side's shot.
+
+TC-10: Show available target cells [Task 4]
+Setup: Start a new game.
+Steps: View the board before firing, then fire at one known ship coordinate
+and one known empty coordinate.
+Expected: The grid starts with underscores for every cell, changes the hit to
+X and the miss to O, and leaves all untried cells as underscores.
+
+TC-11: Report shot feedback exactly once [Task 4]
+Setup: Start a game with deterministic player and AI coordinates.
+Steps: Fire one hit and one miss as the player; have the AI fire one hit and
+one miss in separate runs.
+Expected: Every actual shot produces exactly one corresponding HIT or MISS
+message. Each sunk ship produces one sinking message; internal AI choice
+selection produces no shot-result messages.
+
+TC-12: Report a fleet win once [Task 4]
+Setup: Set up a one-ship fleet or use deterministic shots against the final
+remaining ship.
+Steps: Sink the last ship.
+Expected: The final shot produces one HIT message and one fleet-win message,
+then the game exits without another turn.
+
+TC-13: Earn another turn after a hit [Bonus turn rule]
+Setup: Start a game with deterministic AI coordinates.
+Steps: Fire at a ship cell without sinking the fleet.
+Expected: The game prompts the player again without firing an AI shot. After a
+miss, the AI takes its normal turn.
+
+TC-14: Randomize valid fleet placement
+Setup: Start several new games.
+Steps: Inspect each player's and AI's fleet positions.
+Expected: Each side has one length-3 ship and one length-2 ship, each ship is
+straight and within the board, ships on the same board do not overlap, and
+placements vary between games.
